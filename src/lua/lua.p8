@@ -67,12 +67,12 @@ jam_sprite = 1
 jam_score = 100
 
 function jam_hash_func(vector)
-    return flr((vector.x - jam_offset) % jam_block_size), flr((vector.y - jam_offset) % jam_block_size)
+    return flr((vector.x - jam_offset) / jam_block_size), flr((vector.y - jam_offset) / jam_block_size)
 end
 
 function populate_jam()
-    for y = 0, jam_height, jam_block_size do
-        for x = 0, jam_width, jam_block_size do
+    for y = 1, flr(jam_height/jam_block_size) do
+        for x = 1, flr(jam_width/jam_block_size) do
             jam[x] = jam[x] or {}
             jam[x][y] = "full"
         end
@@ -81,10 +81,10 @@ function populate_jam()
 end
 
 function draw_jam()
-    for y = 0, jam_height, jam_block_size do
-        for x = 0, jam_width, jam_block_size do
+    for y = 1, flr(jam_height/jam_block_size) do
+        for x = 1, flr(jam_width/jam_block_size) do
             if jam[x][y] == "full" then
-                spr(jam_sprite, x + jam_offset, y + jam_offset)
+                spr(jam_sprite, x * jam_block_size + jam_offset, y * jam_block_size + jam_offset)
             end
         end
     end
@@ -160,6 +160,9 @@ function clamp_move_bottomright(pos, speed)
 end
 
 function gameloop()
+    if not jam_populated then
+        populate_jam()
+    end
     --player 1 movement
     if (btn(0,0) and player1.x > topleftperameter) then
          player1.x = clamp_move_topleft(player1.x, -player1.speed)
