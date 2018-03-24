@@ -1,57 +1,8 @@
 pico-8 cartridge // http://www.pico-8.com
 version 16
 __lua__
---------------------------------------------------------------
--- global parameters
---------------------------------------------------------------
+
 mode = "menu"
-lastTime = time()
-deltaTime = 0
-
-function update_delta_time()
-    local time = time()
-    deltaTime = time - lastTime
-    lastTime = time
-end
-
---------------------------------------------------------------
--- sfx parameters
---------------------------------------------------------------
-eating =
-{
-    1, 2, 3
-}
-run = 5
-
-
-rate_limiters = {}
---------------------------------------------------------------
--- global functions
---------------------------------------------------------------
-function play_sound(sound, channel)
-    if type(sound) == "table" then
-        local soundIndex = math.random(#sound)
-        sfx(sound[soundIndex], channel)
-    else
-        sfx(sound, channel)
-    end
-end
-
-function play_rate_limited_sound(sound, channel, length)
-    if not (rate_limiters[channel] and rate_limiters[channel] > 0) then
-        rate_limiters[channel] = length
-        play_sound(sound, channel)
-    end
-end
-
-function update_rate_limited_audio()
-    for i = 1, #rate_limiters do
-        if rate_limiters[i] > 0 then
-            rate_limiters[i] -= deltaTime
-        end
-    end
-end
-
 --------------------------------------------------------------
 -- main menu loop
 --------------------------------------------------------------
@@ -74,12 +25,18 @@ end
 --------------------------------------------------------------
 -- main game loop
 --------------------------------------------------------------
+player1 = {} 
+player1.speed = 5
+player1.x = 1
+player1.y = 1
+player1.sprite = 1
 
-speed = 5
-player1x = 1
-player1y = 1
-player2x = 10
-player2y = 10
+player2 = {} 
+player2.speed = 5
+player2.x = 10
+player2.y = 10
+player2.sprite = 5
+
 topleftperameter = 5
 bottomrightperameter = 20 -- dont know proper perameters yet 
 
@@ -101,16 +58,40 @@ end
 
 function gameloop()
     --player 1 movement
-    if (btn(0,0) and player1x > topleftperameter) then player1x = clamp_move_topleft(player1x, -speed) end
-    if (btn(1,0) and player1x < bottomrightperameter) then player1x = clamp_move_bottomright(player1x, speed) end
-    if (btn(2,0) and player1y > topleftperameter) then player1y = clamp_move_topleft(player1y, -speed) end
-    if (btn(3,0) and player1y < bottomrightperameter) then player1y = clamp_move_bottomright(player1y, speed) end
+    if (btn(0,0) and player1.x > topleftperameter) then
+         player1.x = clamp_move_topleft(player1.x, -player1.speed)
+        player1.sprite = 4
+    end
+    if (btn(1,0) and player1.x < bottomrightperameter) then
+        player1.x = clamp_move_bottomright(player1.x, player1.speed)
+        player1.sprite = 2
+    end
+    if (btn(2,0) and player1.y > topleftperameter) then
+        player1.y = clamp_move_topleft(player1.y, -player1.speed)
+        player1.sprite = 1
+    end
+    if (btn(3,0) and player1.y < bottomrightperameter) then
+        player1.y = clamp_move_bottomright(player1.y, player1.speed)
+        player1.sprite = 3
+    end
     --player 2 movement
     
-    if (btn(0,1) and player2x > topleftperameter) then player2x = clamp_move_topleft(player2x, -speed) end
-    if (btn(1,1) and player2x < bottomrightperameter) then player2x = clamp_move_bottomright(player2x, speed) end
-    if (btn(2,1) and player2y > topleftperameter) then player2y = clamp_move_topleft(player2y, -speed) end
-    if (btn(3,1) and player2y < bottomrightperameter) then player2y = clamp_move_bottomright(player2y, speed) end
+    if (btn(0,1) and player2.x > topleftperameter) then
+        player2.x = clamp_move_topleft(player2.x, -player2.speed)
+        player2.sprite = 8
+    end
+    if (btn(1,1) and player2.x < bottomrightperameter) then
+        player2.x = clamp_move_bottomright(player2.x, player2.speed)
+        player2.sprite = 6
+    end
+    if (btn(2,1) and player2.y > topleftperameter) then
+        player2.y = clamp_move_topleft(player2.y, -player2.speed)
+        player2.sprite = 5
+    end
+    if (btn(3,1) and player2.y < bottomrightperameter) then
+        player2.y = clamp_move_bottomright(player2.y, player2.speed)
+        player2.sprite = 7
+    end
     
     if btn(4) then 
         mode = "end"
@@ -119,17 +100,30 @@ end
 
 function gamedrawloop()
     cls()
-    spr(1,player1x,player1y)
-    spr(2,player2x,player2y)
+    spr(player1.sprite,player1.x,player1.y)
+    spr(player2.sprite,player2.x,player2.y)
 end
+
+--------------------------------------------------------------
+-- main end screen loop
+--------------------------------------------------------------
+function endloop()
+    cls()
+    print("game over");
+    if btn(4) or btn(5) then
+        mode = "menu"
+        cls()
+    end
+end
+
+function enddrawloop()
+
+end
+
 --------------------------------------------------------------
 -- main update loops
 --------------------------------------------------------------
 function _update()
-    
-    update_delta_time()
-    update_rate_limited_audio()
-
     if mode == "menu" then
         menuloop()
     elseif mode == "game" then
