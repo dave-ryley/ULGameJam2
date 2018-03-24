@@ -60,10 +60,10 @@ jam = {}
 
 jam_width = 100
 jam_height = 100
-jam_block_size = 6
+jam_block_size = 8
 jam_populated = false
 jam_offset = 10
-jam_sprite = 1
+jam_sprites = {16, 17, 18, 19}
 jam_score = 100
 
 function jam_hash_func(vector)
@@ -74,19 +74,24 @@ function populate_jam()
     for y = 1, flr(jam_height/jam_block_size) do
         for x = 1, flr(jam_width/jam_block_size) do
             jam[x] = jam[x] or {}
-            jam[x][y] = "full"
+            jam[x][y] = flr(rnd(4)) + 1
         end
     end
     jam_populated = true
 end
 
 function draw_jam()
+    local no_jam_left = true
     for y = 1, flr(jam_height/jam_block_size) do
         for x = 1, flr(jam_width/jam_block_size) do
-            if jam[x][y] == "full" then
-                spr(jam_sprite, x * jam_block_size + jam_offset, y * jam_block_size + jam_offset)
+            if jam[x][y] ~= "empty" then
+                no_jam_left = false
+                spr(jam_sprites[jam[x][y]], x * jam_block_size + jam_offset, y * jam_block_size + jam_offset)
             end
         end
+    end
+    if no_jam_left then
+        mode = "end"
     end
 end
 
@@ -182,7 +187,7 @@ function gameloop()
     end
 
     local x, y = jam_hash_func(player1)
-    if jam[x] and jam[x][y] == "full" then
+    if jam[x] and jam[x][y] ~= "empty" then
         player1.score += jam_score
         jam[x][y] = "empty"
     end
@@ -207,7 +212,7 @@ function gameloop()
     end
     
     x, y = jam_hash_func(player2)
-    if jam[x] and jam[x][y] == "full" then
+    if jam[x] and jam[x][y] ~= "empty" then
         player2.score += jam_score
         jam[x][y] = "empty"
     end
@@ -220,8 +225,8 @@ end
 function gamedrawloop()
     cls()
     draw_jam()
-    spr(player1.sprite,player1.x,player1.y)
-    spr(player2.sprite,player2.x,player2.y)
+    spr(player1.sprite,player1.x - 4,player1.y - 4)
+    spr(player2.sprite,player2.x - 4,player2.y - 4)
 end
 
 --------------------------------------------------------------
