@@ -18,6 +18,10 @@ function menuLoop()
     end
 end
 
+function menuDrawLoop()
+
+end
+
 --------------------------------------------------------------
 -- Main Game Loop
 --------------------------------------------------------------
@@ -38,6 +42,10 @@ function gameLoop()
     end
 end
 
+function gameDrawLoop()
+
+end
+
 --------------------------------------------------------------
 -- Main End Screen Loop
 --------------------------------------------------------------
@@ -50,8 +58,12 @@ function endLoop()
     end
 end
 
+function endDrawLoop()
+
+end
+
 --------------------------------------------------------------
--- Main Update Loop
+-- Main Update Loops
 --------------------------------------------------------------
 function _update()
     if mode == "menu" then
@@ -60,5 +72,15 @@ function _update()
         gameLoop()
     elseif mode == "end" then
         endLoop()
+    end
+end
+
+function _draw()
+    if mode == "menu" then
+        menuDrawLoop()
+    elseif mode == "game" then
+        gameDrawLoop()
+    elseif mode == "end" then
+        endDrawLoop()
     end
 end
