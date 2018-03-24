@@ -76,18 +76,42 @@ end
 --------------------------------------------------------------
 
 speed = 5
-playerx = 1
-playery = 1
-toprightperameter = 200
-bottomleftperameter = 0 -- dont know perameters yet 
+player1x = 1
+player1y = 1
+player2x = 10
+player2y = 10
+topleftperameter = 5
+bottomrightperameter = 20 -- dont know proper perameters yet 
+
+function clamp_move_topleft(pos, speed)
+    pos += speed
+    if(pos < topleftperameter ) then
+        pos = topleftperameter
+    end
+    return pos
+end
+
+function clamp_move_bottomright(pos, speed)
+    pos += speed
+    if(pos > bottomrightperameter) then
+        pos = bottomrightperameter
+    end
+    return pos
+end
 
 function gameloop()
+    --player 1 movement
+    if (btn(0,0) and player1x > topleftperameter) then player1x = clamp_move_topleft(player1x, -speed) end
+    if (btn(1,0) and player1x < bottomrightperameter) then player1x = clamp_move_bottomright(player1x, speed) end
+    if (btn(2,0) and player1y > topleftperameter) then player1y = clamp_move_topleft(player1y, -speed) end
+    if (btn(3,0) and player1y < bottomrightperameter) then player1y = clamp_move_bottomright(player1y, speed) end
+    --player 2 movement
     
-    if (btn(0) and playerx > bottomleftperameter) then playerx -= speed end
-    if (btn(1) and playerx < toprightperameter) then playerx += speed end
-    if (btn(2) and playery < toprightperameter) then playery += speed end
-    if (btn(3) and playery > bottomleftperameter) then playery -= speed end
-    -- draw a sprite
+    if (btn(0,1) and player2x > topleftperameter) then player2x = clamp_move_topleft(player2x, -speed) end
+    if (btn(1,1) and player2x < bottomrightperameter) then player2x = clamp_move_bottomright(player2x, speed) end
+    if (btn(2,1) and player2y > topleftperameter) then player2y = clamp_move_topleft(player2y, -speed) end
+    if (btn(3,1) and player2y < bottomrightperameter) then player2y = clamp_move_bottomright(player2y, speed) end
+    
     if btn(4) then 
         mode = "end"
     end
@@ -95,25 +119,9 @@ end
 
 function gamedrawloop()
     cls()
-    spr(1,playerx,playery)
+    spr(1,player1x,player1y)
+    spr(2,player2x,player2y)
 end
-
---------------------------------------------------------------
--- main end screen loop
---------------------------------------------------------------
-function endloop()
-    cls()
-    print("game over");
-    if btn(4) or btn(5) then
-        mode = "menu"
-        cls()
-    end
-end
-
-function enddrawloop()
-
-end
-
 --------------------------------------------------------------
 -- main update loops
 --------------------------------------------------------------
