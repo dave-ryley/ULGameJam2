@@ -91,14 +91,14 @@ def stitch_chunks(output, label):
 ## Preamble
 output += chunks['preamble']
 # Lua code
-output += "__lua__\n{}".format(chunks['__lua__'])
+output += "\n__lua__\n{}".format(chunks['__lua__'])
 # Art assets
-output += "__gfx__\n{}".format(chunks['__gfx__'])
-output += "__gff__\n{}".format(chunks['__gff__'])
-output += "__map__\n{}".format(chunks['__map__'])
+output += "\n__gfx__\n{}".format(chunks['__gfx__'])
+output += "\n__gff__\n{}".format(chunks['__gff__'])
+output += "\n__map__\n{}".format(chunks['__map__'])
 # Audio assets
-output += "__sfx__\n{}".format(chunks['__sfx__'])
-output += "__music__\n{}".format(chunks['__music__'])
+output += "\n__sfx__\n{}".format(chunks['__sfx__'])
+output += "\n__music__\n{}".format(chunks['__music__'])
 
 # Append all strings together for build
 with open('bin/build.p8', 'w') as build:
