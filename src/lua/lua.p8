@@ -145,6 +145,10 @@ left_parameter = 20
 function game_start()
     jam_populated = false
     populate_jam()
+    player1.x = flr(rnd(right_parameter - left_parameter) + left_parameter)
+    player1.y = flr(rnd (bottom_parameter - top_parameter) + top_parameter)
+    player2.x = flr(rnd(right_parameter - left_parameter) + left_parameter)
+    player2.y = flr(rnd (bottom_parameter - top_parameter) + top_parameter)
 end
 
 --------------------------------------------------------------
