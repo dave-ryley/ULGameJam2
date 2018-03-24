@@ -228,7 +228,7 @@ function gamedrawloop()
     draw_jam()
     spr(player1.sprite,player1.x - 4,player1.y - 4)
     spr(player2.sprite,player2.x - 4,player2.y - 4)
-    --map(0,0,0,0,16,14)
+    map(0,0,0,0,16,14)
 end
 
 --------------------------------------------------------------
