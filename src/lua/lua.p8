@@ -8,6 +8,8 @@ __lua__
 mode = "menu"
 lasttime = time()
 deltatime = 0
+started_game = false
+ended_game = false
 
 function update_delta_time()
     local time = time()
@@ -20,7 +22,7 @@ end
 --------------------------------------------------------------
 eating =
 {
-    1, 2, 3
+    1, 2, 3, 4, 5, 6, 7, 8
 }
 run = 5
 
@@ -31,7 +33,7 @@ rate_limiters = {}
 --------------------------------------------------------------
 function play_sound(sound, channel)
     if type(sound) == "table" then
-        local soundindex = math.random(#sound)
+        local soundindex = flr(rnd(#sound) + 1)
         sfx(sound[soundindex], channel)
     else
         sfx(sound, channel)
@@ -91,6 +93,7 @@ function draw_jam()
         end
     end
     if no_jam_left then
+        ended_game = true
         mode = "end"
     end
 end
@@ -107,6 +110,7 @@ function menuloop()
     print('dave\ndarren\nbrian\njono')
     if btn(4) or btn(5) then
         mode = "game"
+        started_game = true
         cls()
     end
 end
@@ -140,8 +144,11 @@ bottomrightperameter = 110 -- dont know proper perameters yet
 --------------------------------------------------------------
 
 function game_start()
+    sfx(9)
+    music(0, 300, 3)
     jam_populated = false
     populate_jam()
+    started_game = false
 end
 
 --------------------------------------------------------------
@@ -165,8 +172,8 @@ function clamp_move_bottomright(pos, speed)
 end
 
 function gameloop()
-    if not jam_populated then
-        populate_jam()
+    if started_game then
+        game_start()
     end
     --player 1 movement
     if (btn(0,0) and player1.x > topleftperameter) then
@@ -187,7 +194,8 @@ function gameloop()
     end
 
     local x, y = jam_hash_func(player1)
-    if jam[x] and jam[x][y] ~= "empty" then
+    if jam[x] and jam[x][y] ~= "empty" then -- eating
+        play_rate_limited_sound(eating, 1, 0.3)
         player1.score += jam_score
         jam[x][y] = "empty"
     end
@@ -213,6 +221,7 @@ function gameloop()
     
     x, y = jam_hash_func(player2)
     if jam[x] and jam[x][y] ~= "empty" then
+        play_rate_limited_sound(eating, 2, 0.3)
         player2.score += jam_score
         jam[x][y] = "empty"
     end
@@ -233,6 +242,10 @@ end
 -- main end screen loop
 --------------------------------------------------------------
 function endloop()
+    if ended_game then
+        ended_game = false
+        music(-1)
+    end
     cls()
     print("game over");
     if btn(4) or btn(5) then
@@ -248,6 +261,8 @@ end
 -- main update loops
 --------------------------------------------------------------
 function _update()
+    update_rate_limited_audio()
+    update_delta_time()
     if mode == "menu" then
         menuloop()
     elseif mode == "game" then
