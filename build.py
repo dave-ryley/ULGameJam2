@@ -101,7 +101,7 @@ output += "\n__sfx__\n{}".format(chunks['__sfx__'])
 output += "\n__music__\n{}".format(chunks['__music__'])
 
 # Append all strings together for build
-with open('bin/build.p8', 'w') as build:
+with open('bin/jamthegame.p8', 'w') as build:
     build.write(output)
 
 print("Done.")
