@@ -238,6 +238,10 @@ end
 -- main end screen loop
 --------------------------------------------------------------
 function endloop()
+    if ended_game then
+        ended_game = false
+        music(-1)
+    end
     cls()
     print("game over");
     if btn(4) or btn(5) then
@@ -254,6 +258,8 @@ end
 -- main update loops
 --------------------------------------------------------------
 function _update()
+    update_rate_limited_audio()
+    update_delta_time()
     if mode == "menu" then
         menuloop()
     elseif mode == "game" then
