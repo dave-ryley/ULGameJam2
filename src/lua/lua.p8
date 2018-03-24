@@ -67,7 +67,7 @@ jam_sprite = 1
 jam_score = 100
 
 function jam_hash_func(vector)
-    return (vector.x - jam_offset) % jam_block_size, (vector.y - jam_offset) % jam_block_size
+    return flr((vector.x - jam_offset) % jam_block_size), flr((vector.y - jam_offset) % jam_block_size)
 end
 
 function populate_jam()
@@ -118,15 +118,17 @@ player1.speed = 5
 player1.x = 1
 player1.y = 1
 player1.sprite = 1
+player1.score = 0
 
 player2 = {} 
 player2.speed = 5
 player2.x = 10
 player2.y = 10
 player2.sprite = 5
+player2.score = 0
 
-topleftperameter = 5
-bottomrightperameter = 20 -- dont know proper perameters yet 
+topleftperameter = 10
+bottomrightperameter = 110 -- dont know proper perameters yet 
 
 --------------------------------------------------------------
 -- game start
@@ -177,9 +179,9 @@ function gameloop()
     end
 
     local x, y = jam_hash_func(player1)
-    if jam[x][y] == "full" then
+    if jam[x] and jam[x][y] == "full" then
         player1.score += jam_score
-        jam[x][y] == "empty"
+        jam[x][y] = "empty"
     end
 
     --player 2 movement
@@ -202,9 +204,9 @@ function gameloop()
     end
     
     x, y = jam_hash_func(player2)
-    if jam[x][y] == "full" then
+    if jam[x] and jam[x][y] == "full" then
         player2.score += jam_score
-        jam[x][y] == "empty"
+        jam[x][y] = "empty"
     end
 
     -- if btn(4) then 
