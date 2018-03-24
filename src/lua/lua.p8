@@ -122,6 +122,13 @@ function gamedrawloop()
     spr(1,player1x,player1y)
     spr(2,player2x,player2y)
 end
+
+function endloop()
+end
+
+function enddrawloop()
+end
+
 --------------------------------------------------------------
 -- main update loops
 --------------------------------------------------------------
@@ -138,6 +145,7 @@ function _update()
         endloop()
     end
 end
+
 
 function _draw()
     if mode == "menu" then
