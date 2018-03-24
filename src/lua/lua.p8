@@ -8,6 +8,8 @@ __lua__
 mode = "menu"
 lasttime = time()
 deltatime = 0
+game_started = false
+ended_game = false
 
 function update_delta_time()
     local time = time()
@@ -20,18 +22,18 @@ end
 --------------------------------------------------------------
 eating =
 {
-    1, 2, 3
+    1, 2, 3, 4, 5, 6, 7, 8
 }
-run = 5
 
 
 rate_limiters = {}
+buttonPress = 0
 --------------------------------------------------------------
 -- global functions
 --------------------------------------------------------------
 function play_sound(sound, channel)
     if type(sound) == "table" then
-        local soundindex = math.random(#sound)
+        local soundindex = flr(rnd(#sound) + 1)
         sfx(sound[soundindex], channel)
     else
         sfx(sound, channel)
@@ -50,6 +52,9 @@ function update_rate_limited_audio()
         if rate_limiters[i] > 0 then
             rate_limiters[i] -= deltatime
         end
+    end
+    if buttonPress > 0 then
+        buttonPress -= deltatime
     end
 end
 
@@ -93,6 +98,7 @@ function draw_jam()
         end
     end
     if no_jam_left then
+        ended_game = true
         mode = "end"
     end
 end
@@ -104,9 +110,9 @@ function menuloop()
     if not jam_populated then
         populate_jam()
     end
-    if btn(4) or btn(5) then
+    if btn(4) or btn(5) and buttonPress <= 0 then
         mode = "game"
-        started_game = true
+        game_started = false
     end
 end
 
@@ -146,12 +152,15 @@ left_parameter = 20
 --------------------------------------------------------------
 
 function game_start()
+    sfx(9)
+    music(0, 300, 3)
     jam_populated = false
     populate_jam()
     player1.x = flr(rnd(right_parameter - left_parameter) + left_parameter)
     player1.y = flr(rnd (bottom_parameter - top_parameter) + top_parameter)
     player2.x = flr(rnd(right_parameter - left_parameter) + left_parameter)
     player2.y = flr(rnd (bottom_parameter - top_parameter) + top_parameter)
+    game_started = true
 end
 
 --------------------------------------------------------------
@@ -173,8 +182,8 @@ function clamp_move(pos, speed, param)
 end
 
 function gameloop()
-    if not jam_populated then
-        populate_jam()
+    if not game_started then
+        game_start()
     end
     --player 1 movement
     if (btn(0,0) and player1.x > left_parameter) then
@@ -196,10 +205,11 @@ function gameloop()
 
     local x, y = jam_hash_func(player1)
     if jam[x] and jam[x][y] ~= "empty" then
+        play_rate_limited_sound(eating, 1, 0.3)
         player1.score += jam_score
         jam[x][y] = "empty"
     end
-
+    
     --player 2 movement
     
     if (btn(0,1) and player2.x > left_parameter) then
@@ -221,6 +231,7 @@ function gameloop()
     
     x, y = jam_hash_func(player2)
     if jam[x] and jam[x][y] ~= "empty" then
+        play_rate_limited_sound(eating, 2, 0.3)
         player2.score += jam_score
         jam[x][y] = "empty"
     end
@@ -245,6 +256,7 @@ function endloop()
     if btn(4) or btn(5) then
         jam_populated = false
         mode = "menu"
+        buttonPress = 300
     end
 end
 
