@@ -118,14 +118,14 @@ player1.speed = 5
 player1.x = 1
 player1.y = 1
 player1.sprite = 1
-player1.score = 0
+player1.score = 10
 
 player2 = {} 
 player2.speed = 5
 player2.x = 10
 player2.y = 10
 player2.sprite = 5
-player2.score = 0
+player2.score = 20
 
 topleftperameter = 10
 bottomrightperameter = 110 -- dont know proper perameters yet 
@@ -228,15 +228,26 @@ end
 -- main end screen loop
 --------------------------------------------------------------
 function endloop()
-    cls()
-    print("game over");
     if btn(4) or btn(5) then
         mode = "menu"
-        cls()
     end
 end
 
 function enddrawloop()
+    cls()
+    winner={}
+    if player1.score > player2.score then
+        winner = player1
+    elseif player2.score > player1.score then
+        winner = player2
+    end
+    textlabels={"game over","wins!","score".." "..winner.score,"press button for menu"};
+    print(textlabels[1],hcenter(textlabels[1]),vcenter(textlabels[1])-12,rnd(3)+7)
+    spr(winner.sprite,hcenter(textlabels[2])-6,vcenter(textlabels[2]))
+    print(textlabels[2],hcenter(textlabels[2])+6,vcenter(textlabels[2]),rnd(3)+7)
+    print(textlabels[3],hcenter(textlabels[3]),vcenter(textlabels[3])+12,11)
+    print(textlabels[4],hcenter(textlabels[4]),vcenter(textlabels[3])+24,12)
+    color(7) -- reset color to white
 end
 
 --------------------------------------------------------------
@@ -259,6 +270,25 @@ function _draw()
     elseif mode == "game" then
         gamedrawloop()
     elseif mode == "end" then
-        -- enddrawloop()
+        enddrawloop()
     end
+end
+
+--------------------------------------------------------------
+-- helper functions
+--------------------------------------------------------------
+
+function hcenter(s)
+  -- screen center minus the
+  -- string length times the 
+  -- pixels in a char's width,
+  -- cut in half
+  return 64-#s*2
+end
+ 
+function vcenter(s)
+  -- screen center minus the
+  -- string height in pixels,
+  -- cut in half
+  return 61
 end
