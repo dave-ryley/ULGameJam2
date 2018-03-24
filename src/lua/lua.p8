@@ -242,16 +242,27 @@ function endloop()
         ended_game = false
         music(-1)
     end
-    cls()
-    print("game over");
     if btn(4) or btn(5) then
         jam_populated = false
         mode = "menu"
-        cls()
     end
 end
 
 function enddrawloop()
+    cls()
+    winner={}
+    if player1.score > player2.score then
+        winner = player1
+    elseif player2.score > player1.score then
+        winner = player2
+    end
+    textlabels={"game over","wins!","score".." "..winner.score,"press button for menu"};
+    print(textlabels[1],hcenter(textlabels[1]),vcenter(textlabels[1])-12,rnd(3)+7)
+    spr(winner.sprite,hcenter(textlabels[2])-6,vcenter(textlabels[2]))
+    print(textlabels[2],hcenter(textlabels[2])+6,vcenter(textlabels[2]),rnd(3)+7)
+    print(textlabels[3],hcenter(textlabels[3]),vcenter(textlabels[3])+12,11)
+    print(textlabels[4],hcenter(textlabels[4]),vcenter(textlabels[3])+24,12)
+    color(7) -- reset color to white
 end
 
 --------------------------------------------------------------
@@ -278,4 +289,23 @@ function _draw()
     elseif mode == "end" then
         enddrawloop()
     end
+end
+
+--------------------------------------------------------------
+-- helper functions
+--------------------------------------------------------------
+
+function hcenter(s)
+  -- screen center minus the
+  -- string length times the 
+  -- pixels in a char's width,
+  -- cut in half
+  return 64-#s*2
+end
+ 
+function vcenter(s)
+  -- screen center minus the
+  -- string height in pixels,
+  -- cut in half
+  return 61
 end
