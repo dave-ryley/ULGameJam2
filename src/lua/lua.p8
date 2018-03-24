@@ -108,6 +108,7 @@ end
 --------------------------------------------------------------
 function menuloop() 
     if not jam_populated then
+        music(5, 300, 3)
         populate_jam()
     end
     if btn(4) or btn(5) and buttonPress <= 0 then
