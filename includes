@@ -1,0 +1,4 @@
+src/preamble.p8
+src/lua/lua.p8
+src/assets/gfx.p8
+src/assets/sfx.p8
