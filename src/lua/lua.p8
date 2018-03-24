@@ -127,14 +127,14 @@ player1.speed = 5
 player1.x = 1
 player1.y = 1
 player1.sprite = 1
-player1.score = 10
+player1.score = 0
 
 player2 = {} 
 player2.speed = 5
 player2.x = 10
 player2.y = 10
 player2.sprite = 5
-player2.score = 20
+player2.score = 0
 
 top_parameter = 36
 bottom_parameter = 100
@@ -238,6 +238,10 @@ end
 -- main end screen loop
 --------------------------------------------------------------
 function endloop()
+    if ended_game then
+        ended_game = false
+        music(-1)
+    end
     if btn(4) or btn(5) then
         jam_populated = false
         mode = "menu"
@@ -265,6 +269,8 @@ end
 -- main update loops
 --------------------------------------------------------------
 function _update()
+    update_rate_limited_audio()
+    update_delta_time()
     if mode == "menu" then
         menuloop()
     elseif mode == "game" then
