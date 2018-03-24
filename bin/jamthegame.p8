@@ -109,6 +109,7 @@ end
 --------------------------------------------------------------
 function menuloop() 
     if not jam_populated then
+        music(5, 300, 3)
         populate_jam()
     end
     if btn(4) or btn(5) and buttonPress <= 0 then
@@ -120,10 +121,12 @@ end
 function menudrawloop()
     cls()
     spr(64, 36, 36, 56, 28)
+    color(2)
     print('~ ul gamejam 2 ~');
     print('theme: simplicity');
     print('\n++ credits ++\n')
     print('dave\ndarren\nbrian\njono')
+    color(0)
 end
 
 --------------------------------------------------------------
@@ -157,6 +160,8 @@ function game_start()
     music(0, 300, 3)
     jam_populated = false
     populate_jam()
+    player1.score = 0
+    player2.score = 0
     player1.x = flr(rnd(right_parameter - left_parameter) + left_parameter)
     player1.y = flr(rnd (bottom_parameter - top_parameter) + top_parameter)
     player2.x = flr(rnd(right_parameter - left_parameter) + left_parameter)
@@ -264,9 +269,10 @@ end
 function enddrawloop()
     cls()
     winner={}
+    winner.score="great"
     if player1.score > player2.score then
         winner = player1
-    elseif player2.score > player1.score then
+    else
         winner = player2
     end
     textlabels={"game over","wins!","score".." "..winner.score,"press button for menu"};
@@ -322,6 +328,7 @@ function vcenter(s)
   -- cut in half
   return 61
 end
+
 __gfx__
 00000000003993000900900009999990000900900071170001001000011111100001001077777777dddddddd0000000000000000000000000000000000000000
 00000000009aa9009999990099aaaa9900999999001cc1001111110011cccc110011111177777777dddddddd0000000000000000000000000000000000000000

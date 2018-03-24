@@ -120,10 +120,12 @@ end
 function menudrawloop()
     cls()
     spr(64, 36, 36, 56, 28)
+    color(2)
     print('~ ul gamejam 2 ~');
     print('theme: simplicity');
     print('\n++ credits ++\n')
     print('dave\ndarren\nbrian\njono')
+    color(0)
 end
 
 --------------------------------------------------------------
@@ -266,9 +268,10 @@ end
 function enddrawloop()
     cls()
     winner={}
+    winner.score="great"
     if player1.score > player2.score then
         winner = player1
-    elseif player2.score > player1.score then
+    else
         winner = player2
     end
     textlabels={"game over","wins!","score".." "..winner.score,"press button for menu"};
