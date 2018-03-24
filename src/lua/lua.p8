@@ -73,6 +73,7 @@ function jam_hash_func(vector)
 end
 
 function populate_jam()
+    if jam_populated then return end
     for y = 1, flr(jam_height/jam_block_size) do
         for x = 1, flr(jam_width/jam_block_size) do
             jam[x] = jam[x] or {}
@@ -101,22 +102,23 @@ end
 --------------------------------------------------------------
 -- main menu loop
 --------------------------------------------------------------
-function menuloop()
-    cls()
-    populate_jam()
-    print('~ ul gamejam 2 ~');
-    print('theme: simplicity');
-    print('\n++ credits ++\n')
-    print('dave\ndarren\nbrian\njono')
+function menuloop() 
+    if not jam_populated then
+        populate_jam()
+    end
     if btn(4) or btn(5) then
         mode = "game"
         started_game = true
-        cls()
     end
 end
 
 function menudrawloop()
-
+    cls()
+    spr(64, 36, 36, 56, 28)
+    print('~ ul gamejam 2 ~');
+    print('theme: simplicity');
+    print('\n++ credits ++\n')
+    print('dave\ndarren\nbrian\njono')
 end
 
 --------------------------------------------------------------
@@ -225,10 +227,6 @@ function gameloop()
         player2.score += jam_score
         jam[x][y] = "empty"
     end
-
-    -- if btn(4) then 
-    --     mode = "end"
-    -- end
 end
 
 function gamedrawloop()
@@ -249,6 +247,7 @@ function endloop()
     cls()
     print("game over");
     if btn(4) or btn(5) then
+        jam_populated = false
         mode = "menu"
         cls()
     end
@@ -279,6 +278,6 @@ function _draw()
     elseif mode == "game" then
         gamedrawloop()
     elseif mode == "end" then
-        -- enddrawloop()
+        enddrawloop()
     end
 end
