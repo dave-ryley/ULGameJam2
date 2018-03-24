@@ -104,6 +104,7 @@ function gamedrawloop()
     spr(player2.sprite,player2.x,player2.y)
 end
 
+<<<<<<< HEAD
 --------------------------------------------------------------
 -- main end screen loop
 --------------------------------------------------------------
@@ -118,6 +119,12 @@ end
 
 function enddrawloop()
 
+=======
+function endloop()
+end
+
+function enddrawloop()
+>>>>>>> f4e3bd429e22779b920aafe180889c5256b2fc44
 end
 
 --------------------------------------------------------------
@@ -132,6 +139,7 @@ function _update()
         endloop()
     end
 end
+
 
 function _draw()
     if mode == "menu" then
