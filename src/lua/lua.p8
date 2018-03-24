@@ -4,9 +4,9 @@ __lua__
 
 mode = "menu"
 --------------------------------------------------------------
--- Main Menu Loop
+-- main menu loop
 --------------------------------------------------------------
-function menuLoop()
+function menuloop()
     cls()
     print('~ ul gamejam 2 ~');
     print('theme: simplicity');
@@ -18,69 +18,69 @@ function menuLoop()
     end
 end
 
-function menuDrawLoop()
+function menudrawloop()
 
 end
 
 --------------------------------------------------------------
--- Main Game Loop
+-- main game loop
 --------------------------------------------------------------
-function gameLoop()
+function gameloop()
     speed = 5
-    playerX = 1
-    playerY = 1
-    topRightPerameter = 0 
-    bottomLeftPerameter = 0 -- dont know perameters yet 
+    playerx = 1
+    playery = 1
+    toprightperameter = 0 
+    bottomleftperameter = 0 -- dont know perameters yet 
 
-    if (btn(0) and playerX > bottomLeftPerameter) then playerX -= speed end
-    if (btn(1) and plyerX < topRightPerameter) then playerX += speed end
-    if (btn(2) and playerY < topRightPerameter) then playerY += speed end
-    if (btn(3) and playerY > bottomLeftPerameter) then playerY -= speed end
-    -- Draw a sprite
+    if (btn(0) and playerx > bottomleftperameter) then playerx -= speed end
+    if (btn(1) and plyerx < toprightperameter) then playerx += speed end
+    if (btn(2) and playery < toprightperameter) then playery += speed end
+    if (btn(3) and playery > bottomleftperameter) then playery -= speed end
+    -- draw a sprite
     if btn(4) then 
         mode = "end"
     end
 end
 
-function gameDrawLoop()
+function gamedrawloop()
 
 end
 
 --------------------------------------------------------------
--- Main End Screen Loop
+-- main end screen loop
 --------------------------------------------------------------
-function endLoop()
+function endloop()
     cls()
-    print("Game Over");
+    print("game over");
     if btn(4) or btn(5) then
         mode = "menu"
         cls()
     end
 end
 
-function endDrawLoop()
+function enddrawloop()
 
 end
 
 --------------------------------------------------------------
--- Main Update Loops
+-- main update loops
 --------------------------------------------------------------
 function _update()
     if mode == "menu" then
-        menuLoop()
+        menuloop()
     elseif mode == "game" then
-        gameLoop()
+        gameloop()
     elseif mode == "end" then
-        endLoop()
+        endloop()
     end
 end
 
 function _draw()
     if mode == "menu" then
-        menuDrawLoop()
+        menudrawloop()
     elseif mode == "game" then
-        gameDrawLoop()
+        gamedrawloop()
     elseif mode == "end" then
-        endDrawLoop()
+        enddrawloop()
     end
 end
