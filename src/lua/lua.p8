@@ -8,8 +8,6 @@ __lua__
 mode = "menu"
 lasttime = time()
 deltatime = 0
-started_game = false
-ended_game = false
 
 function update_delta_time()
     local time = time()
@@ -22,7 +20,7 @@ end
 --------------------------------------------------------------
 eating =
 {
-    1, 2, 3, 4, 5, 6, 7, 8
+    1, 2, 3
 }
 run = 5
 
@@ -33,7 +31,7 @@ rate_limiters = {}
 --------------------------------------------------------------
 function play_sound(sound, channel)
     if type(sound) == "table" then
-        local soundindex = flr(rnd(#sound) + 1)
+        local soundindex = math.random(#sound)
         sfx(sound[soundindex], channel)
     else
         sfx(sound, channel)
@@ -61,15 +59,16 @@ end
 jam = {}
 
 jam_width = 100
-jam_height = 100
+jam_height = 72
 jam_block_size = 8
 jam_populated = false
-jam_offset = 10
+jam_offset_y = 24
+jam_offset_x = 8
 jam_sprites = {16, 17, 18, 19}
 jam_score = 100
 
 function jam_hash_func(vector)
-    return flr((vector.x - jam_offset) / jam_block_size), flr((vector.y - jam_offset) / jam_block_size)
+    return flr((vector.x - jam_offset_x) / jam_block_size), flr((vector.y - jam_offset_y) / jam_block_size)
 end
 
 function populate_jam()
@@ -89,12 +88,11 @@ function draw_jam()
         for x = 1, flr(jam_width/jam_block_size) do
             if jam[x][y] ~= "empty" then
                 no_jam_left = false
-                spr(jam_sprites[jam[x][y]], x * jam_block_size + jam_offset, y * jam_block_size + jam_offset)
+                spr(jam_sprites[jam[x][y]], x * jam_block_size + jam_offset_x, y * jam_block_size + jam_offset_y)
             end
         end
     end
     if no_jam_left then
-        ended_game = true
         mode = "end"
     end
 end
@@ -138,92 +136,91 @@ player2.y = 10
 player2.sprite = 5
 player2.score = 0
 
-topleftperameter = 10
-bottomrightperameter = 110 -- dont know proper perameters yet 
+top_parameter = 36
+bottom_parameter = 100
+right_parameter = 108
+left_parameter = 20 
 
 --------------------------------------------------------------
 -- game start
 --------------------------------------------------------------
 
 function game_start()
-    sfx(9)
-    music(0, 300, 3)
     jam_populated = false
     populate_jam()
-    started_game = false
+    player1.x = flr(rnd(right_parameter - left_parameter) + left_parameter)
+    player1.y = flr(rnd (bottom_parameter - top_parameter) + top_parameter)
+    player2.x = flr(rnd(right_parameter - left_parameter) + left_parameter)
+    player2.y = flr(rnd (bottom_parameter - top_parameter) + top_parameter)
 end
 
 --------------------------------------------------------------
 -- main game loop
 --------------------------------------------------------------
 
-function clamp_move_topleft(pos, speed)
+function clamp_move(pos, speed, param)
     pos += speed
-    if(pos < topleftperameter ) then
-        pos = topleftperameter
-    end
-    return pos
-end
-
-function clamp_move_bottomright(pos, speed)
-    pos += speed
-    if(pos > bottomrightperameter) then
-        pos = bottomrightperameter
+    if(param == left_parameter or param == top_parameter) then
+        if(pos < param ) then
+            pos = param
+        end
+    else
+        if(pos > param) then
+            pos = param
+        end
     end
     return pos
 end
 
 function gameloop()
-    if started_game then
-        game_start()
+    if not jam_populated then
+        populate_jam()
     end
     --player 1 movement
-    if (btn(0,0) and player1.x > topleftperameter) then
-         player1.x = clamp_move_topleft(player1.x, -player1.speed)
+    if (btn(0,0) and player1.x > left_parameter) then
+         player1.x = clamp_move(player1.x, -player1.speed,left_parameter)
         player1.sprite = 4
     end
-    if (btn(1,0) and player1.x < bottomrightperameter) then
-        player1.x = clamp_move_bottomright(player1.x, player1.speed)
+    if (btn(1,0) and player1.x < right_parameter) then
+        player1.x = clamp_move(player1.x, player1.speed, right_parameter)
         player1.sprite = 2
     end
-    if (btn(2,0) and player1.y > topleftperameter) then
-        player1.y = clamp_move_topleft(player1.y, -player1.speed)
+    if (btn(2,0) and player1.y > top_parameter) then
+        player1.y = clamp_move(player1.y, -player1.speed, top_parameter)
         player1.sprite = 1
     end
-    if (btn(3,0) and player1.y < bottomrightperameter) then
-        player1.y = clamp_move_bottomright(player1.y, player1.speed)
+    if (btn(3,0) and player1.y < bottom_parameter) then
+        player1.y = clamp_move(player1.y, player1.speed, bottom_parameter)
         player1.sprite = 3
     end
 
     local x, y = jam_hash_func(player1)
-    if jam[x] and jam[x][y] ~= "empty" then -- eating
-        play_rate_limited_sound(eating, 1, 0.3)
+    if jam[x] and jam[x][y] ~= "empty" then
         player1.score += jam_score
         jam[x][y] = "empty"
     end
 
     --player 2 movement
     
-    if (btn(0,1) and player2.x > topleftperameter) then
-        player2.x = clamp_move_topleft(player2.x, -player2.speed)
+    if (btn(0,1) and player2.x > left_parameter) then
+        player2.x = clamp_move(player2.x, -player2.speed,left_parameter)
         player2.sprite = 8
     end
-    if (btn(1,1) and player2.x < bottomrightperameter) then
-        player2.x = clamp_move_bottomright(player2.x, player2.speed)
+    if (btn(1,1) and player2.x < right_parameter) then
+        player2.x = clamp_move(player2.x, player2.speed, right_parameter)
         player2.sprite = 6
     end
-    if (btn(2,1) and player2.y > topleftperameter) then
-        player2.y = clamp_move_topleft(player2.y, -player2.speed)
+    if (btn(2,1) and player2.y > top_parameter) then
+        player2.y = clamp_move(player2.y, -player2.speed, top_parameter)
         player2.sprite = 5
     end
-    if (btn(3,1) and player2.y < bottomrightperameter) then
-        player2.y = clamp_move_bottomright(player2.y, player2.speed)
+    if (btn(3,1) and player2.y < bottom_parameter) then
+        player2.y = clamp_move(player2.y, player2.speed, bottom_parameter)
         player2.sprite = 7
     end
     
     x, y = jam_hash_func(player2)
     if jam[x] and jam[x][y] ~= "empty" then
-        play_rate_limited_sound(eating, 2, 0.3)
         player2.score += jam_score
         jam[x][y] = "empty"
     end
@@ -234,16 +231,13 @@ function gamedrawloop()
     draw_jam()
     spr(player1.sprite,player1.x - 4,player1.y - 4)
     spr(player2.sprite,player2.x - 4,player2.y - 4)
+    map(0,0,0,0,16,14)
 end
 
 --------------------------------------------------------------
 -- main end screen loop
 --------------------------------------------------------------
 function endloop()
-    if ended_game then
-        ended_game = false
-        music(-1)
-    end
     cls()
     print("game over");
     if btn(4) or btn(5) then
@@ -260,8 +254,6 @@ end
 -- main update loops
 --------------------------------------------------------------
 function _update()
-    update_rate_limited_audio()
-    update_delta_time()
     if mode == "menu" then
         menuloop()
     elseif mode == "game" then
