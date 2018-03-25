@@ -1,4 +1,4 @@
-src/preamble.p8
-src/lua/lua.p8
-src/assets/gfx.p8
-src/assets/sfx.p8
+__pre__=src/preamble.p8
+__lua__=src/lua/lua.p8
+__gfx__=src/assets/gfx.p8
+__sfx__=src/assets/sfx.p8

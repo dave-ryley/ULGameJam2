@@ -42,10 +42,15 @@ print("Reading includes file")
 with open('includes', 'r') as f:
     read_data = f.read()
 
-filepaths = read_data.split()
+includes = {}
+
+for i in read_data.split():
+    k=i.split('=')[0]
+    v=i.split('=')[1]
+    includes[k] = v
 
 chunks = {
-    'preamble': '',
+    '__pre__': '',
     '__gfx__': '',
     '__gff__': '',
     '__lua__': '',
@@ -54,15 +59,16 @@ chunks = {
     '__music__': ''
 }
 
+
 # Go into each include file
-for filepath in filepaths:
+for filepath in includes.values():
     print(" + {}".format( filepath ))
 
-    if filepath == "src/preamble.p8": 
+    if filepath == "src/__pre__.p8": 
         # Read peamble
         with open(filepath, 'r') as p:
-            preamble_data = p.read()
-        chunks['preamble'] = "{}".format(preamble_data)
+            __pre___data = p.read()
+        chunks['__pre__'] = "{}".format(__pre___data)
 
     if filepath == "src/lua/lua.p8":
         chunks['__lua__'] = pico8_get_chunk_from_file( "__lua__", filepath ) 
@@ -89,7 +95,7 @@ def stitch_chunks(output, label):
 # print(output)
 
 ## Preamble
-output += chunks['preamble']
+output += chunks['__pre__']
 # Lua code
 output += "\n__lua__\n{}".format(chunks['__lua__'])
 # Art assets
