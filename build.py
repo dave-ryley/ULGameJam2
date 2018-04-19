@@ -64,11 +64,11 @@ chunks = {
 for filepath in includes.values():
     print(" + {}".format( filepath ))
 
-    if filepath == "src/__pre__.p8": 
+    if filepath == includes['__pre__']: 
         # Read peamble
         with open(filepath, 'r') as p:
-            __pre___data = p.read()
-        chunks['__pre__'] = "{}".format(__pre___data)
+            preamble_data = p.read()
+        chunks['__pre__'] = "{}".format(preamble_data)
 
     if filepath == "src/lua/lua.p8":
         chunks['__lua__'] = pico8_get_chunk_from_file( "__lua__", filepath ) 
